@@ -16,26 +16,50 @@ with st.sidebar:
     # Intenta leer la clave desde los secretos de Streamlit (si está configurada)
     if "GEMINI_API_KEY" in st.secrets:
         api_key = st.secrets["GEMINI_API_KEY"]
-        st.success("✅ API Key cargada de forma segura desde los ajustes.")
+        st.success("✅ Clave cargada de forma segura")
+        api_key_used = st.secrets["GEMINI_API_KEY"]
     else:
-        api_key = st.text_input("Gemini API Key", type="password", help="Genera una clave gratuita en Google AI Studio")
-        st.markdown("Esta clave no se guarda, se usa solo durante la sesión.")
+        api_key_used = st.text_input("Gemini API Key", type="password")
+        
+    # Agrega esto temporalmente debajo para asegurarnos de que el texto de Google es literal
+    st.markdown("⚠️ **Importante**: Si usaste AI Studio, asegúrate de que tu clave está **íntegra** y el modelo a elegir abajo se autoajuste.")
+    
+    # Vamos a forzar un listado de modelos compatibles dinámicamente:
+    def get_models(key):
+        import google.generativeai as gai
+        try:
+            gai.configure(api_key=key)
+            return [m.name for m in gai.list_models() if 'generateContent' in m.supported_generation_methods]
+        except: return []
+
+    lista_modelos = []
+    if api_key_used:
+        lista_modelos = get_models(api_key_used)
+    
+    if lista_modelos:
+        chosen_model = st.selectbox("Modelo IA Autodetectado:", [m.replace("models/", "") for m in lista_modelos])
+    else:
+        chosen_model = "gemini-1.5-flash"
+
 
 st.header("2. Datos del Nuevo Caso Familiar")
 caso_text = st.text_area("Pega aquí el caso, informe o notas de la familia:", height=300,
     placeholder="Ej: Sonia es una madre de 48 años con problemas de alcoholismo. Tiene una hija de 18 que abandonó los estudios y una de 16... Están en riesgo de desahucio.")
 
 if st.button("Generar PLAPIN en PDF", type="primary"):
-    if not api_key:
+    if not api_key_used:
         st.error("Por favor, introduce tu Gemini API Key en la barra lateral.")
         st.stop()
     if not caso_text.strip():
         st.error("Por favor, introduce el texto del caso familiar.")
         st.stop()
     
-    genai.configure(api_key=api_key)
-    # Utilizamos el modelo ultra-base y estándar (Retrocompatible y no falla con la v1beta)
-    model = genai.GenerativeModel('gemini-pro')
+    genai.configure(api_key=api_key_used)
+    # Utilizamos el modelo exacto que hemos detectado de tu cuenta de Google
+    try:
+        model = genai.GenerativeModel(chosen_model)
+    except Exception as em:
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
     prompt = f"""
 Lee este caso familiar y extrae la información para rellenar el Plan Personalizado de Inclusión.
