@@ -245,6 +245,15 @@ CASO FAMILIAR:
             p4 = doc[3]
             fill_diag_row(p4, 63.5, 111.5, data['diagnostico'].get("8", {}))
             
+            # Additional rows in page 4 (A.4 continuation)
+            try:
+                p4_tab = p4.find_tables().tables[1]
+                for r in p4_tab.rows:
+                    if r.bbox[1] > 170:
+                        fill_diag_row(p4, r.bbox[1], r.bbox[3], {})
+            except:
+                pass
+            
             # P5 Comunes Editable
             p5 = doc[4]
             x5 = [133.5, 297.5, 463.5, 628.5, 670.5, 713.5, 757]
@@ -320,15 +329,16 @@ CASO FAMILIAR:
             insert_text(p7, fitz.Rect(380, 432, 545, 443), "")
             insert_text(p7, fitz.Rect(380, 459, 545, 479), "")
 
-            p7_des = p7.search_for("Situación de desempleo")
-            if p7_des:
-                insert_text(p7, fitz.Rect(p7_des[0].x1+10, p7_des[0].y0-2, 543, p7_des[0].y1+5), "N.º " + exo.get('desempleo_derivacion_labora_nums', '')) 
-            
-            p7_lab = p7.search_for("LABORA")
-            if p7_lab:
-                insert_text(p7, fitz.Rect(156, 626, 543, 638), "X" if exo.get('desempleo_derivacion_labora_nums') else "") 
-            insert_text(p7, fitz.Rect(156, 643, 543, 654), "")
-            insert_text(p7, fitz.Rect(156, 659, 543, 670), "") 
+            # B.3 Dos filas extra (Laboral + Dificultades y celdillas) en P7
+            try:
+                p7_tab_b3 = p7.find_tables().tables[1]
+                # Hacemos editable todas las celdas de la tabla B.3
+                for row in p7_tab_b3.rows:
+                    for c_idx, cell in enumerate(row.cells):
+                        if cell and c_idx > 0:
+                            insert_text(p7, fitz.Rect(cell), "", 10)
+            except:
+                pass
             
             # C) OBSERVACIONES Y COMENTARIOS ADICIONALES (En Página 7 hacia abajo o P8)
             insert_text(p7, fitz.Rect(55, 690, 750, 800), "")
@@ -338,8 +348,11 @@ CASO FAMILIAR:
             p8_fdo = p8.search_for("PERSONAS DESTINATARIAS FIRMANTES")
             if p8_fdo:
                 base_y = p8_fdo[0].y1 + 10
-                for i, fir in enumerate(exo.get('firmantes', [])):
-                    insert_text(p8, fitz.Rect(80, base_y + (25*i), 400, base_y + 20 + (25*i)), fir, fs_data)
+                for i in range(8):
+                    fir = exo.get('firmantes', [])[i] if i < len(exo.get('firmantes', [])) else ""
+                    insert_text(p8, fitz.Rect(80, base_y + (25*i), 380, base_y + 20 + (25*i)), fir, fs_data) # Nombre firmante
+                    insert_text(p8, fitz.Rect(390, base_y + (25*i), 550, base_y + 20 + (25*i)), "", fs_data) # Hueco firma
+                    
                     
             # Caja de observaciones adicional P8
             insert_text(p8, fitz.Rect(55, 100, 750, 300), "")
