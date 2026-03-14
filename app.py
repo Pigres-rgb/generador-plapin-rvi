@@ -152,22 +152,45 @@ CASO FAMILIAR:
                 w.field_flags = 4096  # 4096 = Multiline
                 page.add_widget(w)
 
+            # PAGE 1: Identity Table (8 rows)
             p1 = doc[0]
-            v = [57.5, 85.5, 263.5, 426.5, 496.5, 558.5]
-            insert_centered(p1, fitz.Rect(v[1], 382.5, v[2], 400.5), data['titular']['nombre'], fs_data)
-            insert_centered(p1, fitz.Rect(v[2], 382.5, v[3], 400.5), "Titular", fs_data)
-            insert_centered(p1, fitz.Rect(v[3], 382.5, v[4], 400.5), data['titular']['fecha_nac'], fs_data)
+            # Entidad Local y otros campos de la cabecera para que sean editables:
+            insert_text(p1, fitz.Rect(180, 140, 340, 160), "")
+            insert_text(p1, fitz.Rect(390, 140, 560, 160), "")
+            insert_text(p1, fitz.Rect(180, 165, 340, 185), "")
+            insert_text(p1, fitz.Rect(440, 165, 560, 185), "")
+            insert_text(p1, fitz.Rect(180, 190, 340, 210), "")
+            insert_text(p1, fitz.Rect(440, 190, 560, 210), "")
+            insert_text(p1, fitz.Rect(130, 230, 300, 250), "")
+            insert_text(p1, fitz.Rect(390, 230, 560, 250), "")
             
-            if data['persona_2']['existe']:
-                insert_centered(p1, fitz.Rect(v[0], 400.5, v[1], 421.5), "2", fs_data)
-                insert_centered(p1, fitz.Rect(v[1], 400.5, v[2], 421.5), data['persona_2']['nombre'], fs_data)
-                insert_centered(p1, fitz.Rect(v[2], 400.5, v[3], 421.5), data['persona_2']['parentesco'], fs_data)
-                insert_centered(p1, fitz.Rect(v[3], 400.5, v[4], 421.5), data['persona_2']['fecha_nac'], fs_data)
-            if data['persona_3']['existe']:
-                insert_centered(p1, fitz.Rect(v[0], 421.5, v[1], 442.5), "3", fs_data)
-                insert_centered(p1, fitz.Rect(v[1], 421.5, v[2], 442.5), data['persona_3']['nombre'], fs_data)
-                insert_centered(p1, fitz.Rect(v[2], 421.5, v[3], 442.5), data['persona_3']['parentesco'], fs_data)
-                insert_centered(p1, fitz.Rect(v[3], 421.5, v[4], 442.5), data['persona_3']['fecha_nac'], fs_data)
+            p1_y = [382.5, 400.5, 421.5, 442.5, 463.5, 484.5, 505.5, 526.5, 549.5]
+            v = [57.5, 85.5, 263.5, 426.5, 496.5, 558.5]
+            for i in range(8):
+                if i == 0:
+                    insert_centered(p1, fitz.Rect(v[0], p1_y[i], v[1], p1_y[i+1]), "1", fs_data)
+                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data['titular'].get('nombre',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), "Titular", fs_data)
+                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data['titular'].get('fecha_nac',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[4], p1_y[i], v[5], p1_y[i+1]), "", fs_data)
+                elif i == 1 and data['persona_2']['existe']:
+                    insert_centered(p1, fitz.Rect(v[0], p1_y[i], v[1], p1_y[i+1]), "2", fs_data)
+                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data['persona_2'].get('nombre',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), data['persona_2'].get('parentesco',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data['persona_2'].get('fecha_nac',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[4], p1_y[i], v[5], p1_y[i+1]), "", fs_data)
+                elif i == 2 and data['persona_3']['existe']:
+                    insert_centered(p1, fitz.Rect(v[0], p1_y[i], v[1], p1_y[i+1]), "3", fs_data)
+                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data['persona_3'].get('nombre',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), data['persona_3'].get('parentesco',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data['persona_3'].get('fecha_nac',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[4], p1_y[i], v[5], p1_y[i+1]), "", fs_data)
+                else:
+                    insert_centered(p1, fitz.Rect(v[0], p1_y[i], v[1], p1_y[i+1]), str(i+1), fs_data)
+                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), "", fs_data) # Nombre
+                    insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), "", fs_data) # Parentesco
+                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), "", fs_data) # Fecha Nac
+                    insert_centered(p1, fitz.Rect(v[4], p1_y[i], v[5], p1_y[i+1]), "", fs_data) # Telefono
             
             res_adj = p1.search_for("SÍ (debe adjuntarse)")
             if res_adj:
@@ -177,85 +200,112 @@ CASO FAMILIAR:
                          insert_centered(p1, fitz.Rect(r.x1 + 5, r.y0 - 2, r.x1 + 25, r.y0 + 15), "X", 12)
 
             # P3 y P4 Diagnostics
-            def fill_diag_row(page, y0, y1, inter, obs):
-                if inter['si'] or inter.get('si') == "true":
-                    insert_centered(page, fitz.Rect(253, y0, 276.5, y1), "X", 12)
-                    pr = str(inter.get('prioridad','')).upper()
-                    if pr == "BAJA": insert_centered(page, fitz.Rect(322.5, y0, 349.5, y1), "X", 12)
-                    elif pr == "MEDIA": insert_centered(page, fitz.Rect(349.5, y0, 395.5, y1), "X", 12)
-                    elif pr in ["ALTA", "ALTO"]: insert_centered(page, fitz.Rect(395.5, y0, 439.5, y1), "X", 12)
-                else:
-                    insert_centered(page, fitz.Rect(276.5, y0, 322.5, y1), "X", 12)
+            def fill_diag_row(page, y0, y1, inter):
+                v_si_no = "X" if str(inter.get('si')).lower() in ['true', 'yes', 'sí'] or inter.get('si') == True else ""
+                v_no = "" if v_si_no else "X"
+                pr = str(inter.get('prioridad','')).upper()
+                v_baja = "X" if pr == "BAJA" and v_si_no else ""
+                v_media = "X" if pr == "MEDIA" and v_si_no else ""
+                v_alta = "X" if pr in ["ALTA", "ALTO"] and v_si_no else ""
+                
+                # Generamos widgets para TODAS las celdas vacías o rellenas
+                insert_centered(page, fitz.Rect(253, y0, 276.5, y1), v_si_no, 12)
+                insert_centered(page, fitz.Rect(276.5, y0, 322.5, y1), v_no, 12)
+                insert_centered(page, fitz.Rect(322.5, y0, 349.5, y1), v_baja, 12)
+                insert_centered(page, fitz.Rect(349.5, y0, 395.5, y1), v_media, 12)
+                insert_centered(page, fitz.Rect(395.5, y0, 439.5, y1), v_alta, 12)
+
                 insert_text(page, fitz.Rect(601, y0, 757, y1), inter.get('obs',''), fs_sml)
                 
             p3 = doc[2]
-            fill_diag_row(p3, 174.5, 227.5, data['diagnostico']["1"], data['diagnostico']["1"]['obs'])
-            fill_diag_row(p3, 227.5, 272.5, data['diagnostico']["2"], data['diagnostico']["2"]['obs'])
-            fill_diag_row(p3, 272.5, 323.5, data['diagnostico']["3"], data['diagnostico']["3"]['obs'])
-            fill_diag_row(p3, 323.5, 371.5, data['diagnostico']["4"], data['diagnostico']["4"]['obs'])
-            fill_diag_row(p3, 371.5, 426.5, data['diagnostico']["5"], data['diagnostico']["5"]['obs'])
-            fill_diag_row(p3, 426.5, 471.5, data['diagnostico']["6"], data['diagnostico']["6"]['obs'])
-            fill_diag_row(p3, 471.5, 519.5, data['diagnostico']["7"], data['diagnostico']["7"]['obs'])
+            fill_diag_row(p3, 174.5, 227.5, data['diagnostico'].get("1", {}))
+            fill_diag_row(p3, 227.5, 272.5, data['diagnostico'].get("2", {}))
+            fill_diag_row(p3, 272.5, 323.5, data['diagnostico'].get("3", {}))
+            fill_diag_row(p3, 323.5, 371.5, data['diagnostico'].get("4", {}))
+            fill_diag_row(p3, 371.5, 426.5, data['diagnostico'].get("5", {}))
+            fill_diag_row(p3, 426.5, 471.5, data['diagnostico'].get("6", {}))
+            fill_diag_row(p3, 471.5, 519.5, data['diagnostico'].get("7", {}))
             p4 = doc[3]
-            fill_diag_row(p4, 63.5, 111.5, data['diagnostico']["8"], data['diagnostico']["8"]['obs'])
+            fill_diag_row(p4, 63.5, 111.5, data['diagnostico'].get("8", {}))
             
-            # P5 Comunes
+            # P5 Comunes Editable
             p5 = doc[4]
             x5 = [133.5, 297.5, 463.5, 628.5, 670.5, 713.5, 757]
             com = data['intervencion_comun']
-            insert_text(p5, fitz.Rect(x5[0], 164.5, x5[1], 251.5), com['dinamica']['txt1'])
-            insert_text(p5, fitz.Rect(x5[1], 164.5, x5[2], 251.5), com['dinamica']['txt2'])
-            insert_text(p5, fitz.Rect(x5[2], 164.5, x5[3], 251.5), com['dinamica']['txt3'])
-            insert_text(p5, fitz.Rect(x5[0], 272.5, x5[1], 352.5), com['vivienda']['txt1'])
-            insert_text(p5, fitz.Rect(x5[1], 272.5, x5[2], 352.5), com['vivienda']['txt2'])
-            insert_text(p5, fitz.Rect(x5[2], 272.5, x5[3], 352.5), com['vivienda']['txt3'])
-            if com['vivienda'].get('corto'): insert_centered(p5, fitz.Rect(x5[3], 272.5, x5[4], 352.5), "X", 12)
-            insert_text(p5, fitz.Rect(x5[0], 379.5, x5[1], 477.5), com['economico']['txt1'])
-            insert_text(p5, fitz.Rect(x5[1], 379.5, x5[2], 477.5), com['economico']['txt2'])
-            insert_text(p5, fitz.Rect(x5[2], 379.5, x5[3], 477.5), com['economico']['txt3'])
-            if com['economico'].get('corto'): insert_centered(p5, fitz.Rect(x5[3], 379.5, x5[4], 477.5), "X", 12)
-            if com['economico'].get('medio'): insert_centered(p5, fitz.Rect(x5[4], 379.5, x5[5], 477.5), "X", 12)
+            
+            def fill_com_row(page, y0, y1, inter):
+                insert_text(page, fitz.Rect(x5[0], y0, x5[1], y1), inter.get('txt1', ''))
+                insert_text(page, fitz.Rect(x5[1], y0, x5[2], y1), inter.get('txt2', ''))
+                insert_text(page, fitz.Rect(x5[2], y0, x5[3], y1), inter.get('txt3', ''))
+                insert_centered(page, fitz.Rect(x5[3], y0, x5[4], y1), "X" if inter.get('corto') else "", 12)
+                insert_centered(page, fitz.Rect(x5[4], y0, x5[5], y1), "X" if inter.get('medio') else "", 12)
+                insert_centered(page, fitz.Rect(x5[5], y0, x5[6], y1), "X" if inter.get('largo') else "", 12)
+                
+            fill_com_row(p5, 164.5, 251.5, com.get('dinamica', {}))
+            insert_text(p5, fitz.Rect(x5[0], 251.5, x5[-1], 272.5), "") # Fila Obs
+            fill_com_row(p5, 272.5, 352.5, com.get('vivienda', {}))
+            insert_text(p5, fitz.Rect(x5[0], 352.5, x5[-1], 379.5), "")
+            fill_com_row(p5, 379.5, 477.5, com.get('economico', {}))
+            insert_text(p5, fitz.Rect(x5[0], 477.5, x5[-1], 506.5), "")
 
             insert_centered(p5, fitz.Rect(56, 558, 70, 580), "1", fs_data)
             insert_centered(p5, fitz.Rect(70, 558, 330, 580), data['titular']['nombre'], fs_data)
             insert_centered(p5, fitz.Rect(340, 558, 440, 580), "Titular", fs_data)
             insert_centered(p5, fitz.Rect(450, 558, 550, 580), data['titular']['fecha_nac'], fs_data)
 
-            # P6 Personalizada Titular
+            # P6 Personalizada Editable
             p6 = doc[5]
             x6 = [144.5, 298.5, 463.5, 629.0, 671.5, 714.5, 758.0]
             tit = data['intervencion_titular']
-            insert_text(p6, fitz.Rect(x6[0], 127.5, x6[1], 203.5), tit['desarrollo_personal']['txt1'])
-            insert_text(p6, fitz.Rect(x6[1], 127.5, x6[2], 203.5), tit['desarrollo_personal']['txt2'])
-            insert_text(p6, fitz.Rect(x6[2], 127.5, x6[3], 203.5), tit['desarrollo_personal']['txt3'])
-            insert_text(p6, fitz.Rect(x6[0], 223.5, x6[1], 299.5), tit['desarrollo_comun']['txt1'])
-            insert_text(p6, fitz.Rect(x6[1], 223.5, x6[2], 299.5), tit['desarrollo_comun']['txt2'])
-            insert_text(p6, fitz.Rect(x6[2], 223.5, x6[3], 299.5), tit['desarrollo_comun']['txt3'])
-            insert_text(p6, fitz.Rect(x6[0], 319.5, x6[1], 393.5), tit['sanitario']['txt1'])
-            insert_text(p6, fitz.Rect(x6[1], 319.5, x6[2], 393.5), tit['sanitario']['txt2'])
-            insert_text(p6, fitz.Rect(x6[2], 319.5, x6[3], 393.5), tit['sanitario']['txt3'])
-            if tit['sanitario'].get('corto'): insert_centered(p6, fitz.Rect(x6[3], 319.5, x6[4], 393.5), "X", 12)
-            insert_text(p6, fitz.Rect(x6[0], 416.5, x6[1], 490.5), tit['formativo_laboral']['txt1'])
-            insert_text(p6, fitz.Rect(x6[1], 416.5, x6[2], 490.5), tit['formativo_laboral']['txt2'])
-            insert_text(p6, fitz.Rect(x6[2], 416.5, x6[3], 490.5), tit['formativo_laboral']['txt3'])
-            if tit['formativo_laboral'].get('medio'): insert_centered(p6, fitz.Rect(x6[4], 416.5, x6[5], 490.5), "X", 12)
+            
+            def fill_per_row(page, y0, y1, inter):
+                insert_text(page, fitz.Rect(x6[0], y0, x6[1], y1), inter.get('txt1', ''))
+                insert_text(page, fitz.Rect(x6[1], y0, x6[2], y1), inter.get('txt2', ''))
+                insert_text(page, fitz.Rect(x6[2], y0, x6[3], y1), inter.get('txt3', ''))
+                insert_centered(page, fitz.Rect(x6[3], y0, x6[4], y1), "X" if inter.get('corto') else "", 12)
+                insert_centered(page, fitz.Rect(x6[4], y0, x6[5], y1), "X" if inter.get('medio') else "", 12)
+                insert_centered(page, fitz.Rect(x6[5], y0, x6[6], y1), "X" if inter.get('largo') else "", 12)
+                
+            fill_per_row(p6, 127.5, 203.5, tit.get('desarrollo_personal', {}))
+            insert_text(p6, fitz.Rect(x6[0], 203.5, x6[-1], 223.5), "")
+            fill_per_row(p6, 223.5, 299.5, tit.get('desarrollo_comun', {}))
+            insert_text(p6, fitz.Rect(x6[0], 299.5, x6[-1], 319.5), "")
+            fill_per_row(p6, 319.5, 393.5, tit.get('sanitario', {}))
+            insert_text(p6, fitz.Rect(x6[0], 393.5, x6[-1], 416.5), "")
+            fill_per_row(p6, 416.5, 490.5, tit.get('formativo_laboral', {}))
+            insert_text(p6, fitz.Rect(x6[0], 490.5, x6[-1], 509.5), "")
 
             # Resto miembros
             insert_text(p6, fitz.Rect(56, 510, 750, 530), "-- SECCIÓN DE ANEXO: INTERVENCIÓN OTROS MIEMBROS --", 11)
             insert_text(p6, fitz.Rect(56, 535, 750, 680), data.get('intervencion_otros_miembros', ''), fs_data)
 
-            # P7 Exoneraciones
+            # P7 Exoneraciones Generales
             p7 = doc[6]
             exo = data['exoneraciones']
+            insert_text(p7, fitz.Rect(380, 110, 545, 138), "") # Bloques en blanco para todas
+            insert_text(p7, fitz.Rect(380, 160, 545, 186), "")
+            insert_text(p7, fitz.Rect(380, 209, 545, 260), "")
+            insert_text(p7, fitz.Rect(380, 298, 545, 318), "")
+            insert_text(p7, fitz.Rect(380, 335, 545, 347), "")
+            insert_text(p7, fitz.Rect(380, 362, 545, 373), "")
+            
             p7_ex = p7.search_for("Estudiante mayor de 16 años")
-            if p7_ex and exo.get('menor_estudiando_num'):
-                insert_centered(p7, fitz.Rect(p7_ex[0].x1+3, p7_ex[0].y0, p7_ex[0].x1+60, p7_ex[0].y1), "N.º " + exo['menor_estudiando_num'], 12) 
+            if p7_ex:
+                insert_text(p7, fitz.Rect(p7_ex[0].x1+3, p7_ex[0].y0-2, 545, p7_ex[0].y1+5), "N.º " + exo.get('menor_estudiando_num', '')) 
+            
+            insert_text(p7, fitz.Rect(380, 413, 545, 425), "")
+            insert_text(p7, fitz.Rect(380, 432, 545, 443), "")
+            insert_text(p7, fitz.Rect(380, 459, 545, 479), "")
+
             p7_des = p7.search_for("Situación de desempleo")
-            if p7_des and exo.get('desempleo_derivacion_labora_nums'):
-                insert_centered(p7, fitz.Rect(p7_des[0].x1+10, p7_des[0].y0, p7_des[0].x1+120, p7_des[0].y1), "N.º " + exo['desempleo_derivacion_labora_nums'], 12) 
+            if p7_des:
+                insert_text(p7, fitz.Rect(p7_des[0].x1+10, p7_des[0].y0-2, 543, p7_des[0].y1+5), "N.º " + exo.get('desempleo_derivacion_labora_nums', '')) 
+            
             p7_lab = p7.search_for("LABORA")
             if p7_lab:
-                insert_centered(p7, fitz.Rect(p7_lab[0].x1+5, p7_lab[0].y0, p7_lab[0].x1+40, p7_lab[0].y1), "X", 12) 
+                insert_text(p7, fitz.Rect(156, 626, 543, 638), "X" if exo.get('desempleo_derivacion_labora_nums') else "") 
+            insert_text(p7, fitz.Rect(156, 643, 543, 654), "")
+            insert_text(p7, fitz.Rect(156, 659, 543, 670), "") 
 
             # P8 Firmas
             p8 = doc[7]
