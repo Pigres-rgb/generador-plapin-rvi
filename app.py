@@ -34,8 +34,8 @@ if st.button("Generar PLAPIN en PDF", type="primary"):
         st.stop()
     
     genai.configure(api_key=api_key)
-    # Utilizamos el modelo ultra-rápido estándar que no falla con cuentas gratuitas
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # Utilizamos el modelo ultra-base y estándar (Retrocompatible y no falla con la v1beta)
+    model = genai.GenerativeModel('gemini-pro')
 
     prompt = f"""
 Lee este caso familiar y extrae la información para rellenar el Plan Personalizado de Inclusión.
