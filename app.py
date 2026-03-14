@@ -126,11 +126,31 @@ CASO FAMILIAR:
             doc = fitz.open("Plantilla_RVI.pdf")
             color, font, fs_data, fs_txt, fs_sml = (0, 0, 0.7), "hebo", 10, 9, 8
             
+            import uuid
             def insert_centered(page, rect, text, fs=12):
-                page.insert_textbox(rect, str(text), fontname=font, fontsize=fs, color=color, align=fitz.TEXT_ALIGN_CENTER)
+                w = fitz.Widget()
+                w.rect = rect
+                w.field_type = fitz.PDF_WIDGET_TYPE_TEXT
+                w.field_name = "f_" + str(uuid.uuid4()).replace("-", "")
+                w.field_value = str(text)
+                w.text_font = "Helv"
+                w.text_fontsize = fs
+                w.text_color = list(color)
+                w.text_format = 1  # 1 = Centered
+                page.add_widget(w)
+                
             def insert_text(page, rect, text, fs=fs_sml):
                 pad_rect = fitz.Rect(rect.x0+2, rect.y0+2, rect.x1-2, rect.y1-2)
-                page.insert_textbox(pad_rect, str(text), fontname=font, fontsize=fs, color=color, align=fitz.TEXT_ALIGN_LEFT)
+                w = fitz.Widget()
+                w.rect = pad_rect
+                w.field_type = fitz.PDF_WIDGET_TYPE_TEXT
+                w.field_name = "f_" + str(uuid.uuid4()).replace("-", "")
+                w.field_value = str(text)
+                w.text_font = "Helv"
+                w.text_fontsize = fs
+                w.text_color = list(color)
+                w.field_flags = 4096  # 4096 = Multiline
+                page.add_widget(w)
 
             p1 = doc[0]
             v = [57.5, 85.5, 263.5, 426.5, 496.5, 558.5]
@@ -154,7 +174,7 @@ CASO FAMILIAR:
                 res3 = p1.search_for("NO")
                 for r in res3:
                      if abs(r.y0 - res_adj[0].y0) < 20:
-                         p1.insert_text(fitz.Point(r.x1 + 10, r.y0+8), "X", fontname=font, fontsize=12, color=color)
+                         insert_centered(p1, fitz.Rect(r.x1 + 5, r.y0 - 2, r.x1 + 25, r.y0 + 15), "X", 12)
 
             # P3 y P4 Diagnostics
             def fill_diag_row(page, y0, y1, inter, obs):
@@ -221,8 +241,8 @@ CASO FAMILIAR:
             if tit['formativo_laboral'].get('medio'): insert_centered(p6, fitz.Rect(x6[4], 416.5, x6[5], 490.5), "X", 12)
 
             # Resto miembros
-            p6.insert_text(fitz.Point(56, 525), "-- SECCIÓN DE ANEXO: INTERVENCIÓN OTROS MIEMBROS --", fontname="hebo", fontsize=11, color=color)
-            p6.insert_textbox(fitz.Rect(56, 535, 750, 680), data['intervencion_otros_miembros'], fontname="helv", fontsize=fs_data, color=color)
+            insert_text(p6, fitz.Rect(56, 510, 750, 530), "-- SECCIÓN DE ANEXO: INTERVENCIÓN OTROS MIEMBROS --", 11)
+            insert_text(p6, fitz.Rect(56, 535, 750, 680), data.get('intervencion_otros_miembros', ''), fs_data)
 
             # P7 Exoneraciones
             p7 = doc[6]
@@ -243,7 +263,7 @@ CASO FAMILIAR:
             if p8_fdo:
                 base_y = p8_fdo[0].y1 + 10
                 for i, fir in enumerate(exo.get('firmantes', [])):
-                    p8.insert_text(fitz.Point(80, base_y + 10 + (25*i)), fir, fontname=font, fontsize=fs_data, color=color)
+                    insert_text(p8, fitz.Rect(80, base_y + (25*i), 400, base_y + 20 + (25*i)), fir, fs_data)
 
             pdf_bytes = doc.write()
             doc.close()
