@@ -199,6 +199,20 @@ CASO FAMILIAR:
                      if abs(r.y0 - res_adj[0].y0) < 20:
                          insert_centered(p1, fitz.Rect(r.x1 + 5, r.y0 - 2, r.x1 + 25, r.y0 + 15), "X", 12)
 
+            # PAGE 2: Intervenciones Table
+            p2 = doc[1]
+            p2_y = [151.1, 180.8, 210.6, 240.3, 270.1, 299.8, 329.6, 359.3, 389.1, 418.8, 448.5, 478.3, 505.0]
+            p2_x = [67.1, 119.2, 233.0, 454.8, 560.0]
+            for r in range(len(p2_y)-1):
+                for c in range(len(p2_x)-1):
+                    insert_text(p2, fitz.Rect(p2_x[c], p2_y[r], p2_x[c+1], p2_y[r+1]), "")
+            
+            # P2 Checkboxes Planes adicionales
+            insert_centered(p2, fitz.Rect(75, 620, 115, 640), "", 12) # Si checkbox 1
+            insert_centered(p2, fitz.Rect(260, 620, 290, 640), "", 12) # No checkbox 1
+            insert_centered(p2, fitz.Rect(250, 560, 350, 580), "", 12) # Otros checkboxes Si/No
+            insert_centered(p2, fitz.Rect(450, 560, 550, 580), "", 12)
+            
             # P3 y P4 Diagnostics
             def fill_diag_row(page, y0, y1, inter):
                 v_si_no = "X" if str(inter.get('si')).lower() in ['true', 'yes', 'sí'] or inter.get('si') == True else ""
@@ -214,6 +228,9 @@ CASO FAMILIAR:
                 insert_centered(page, fitz.Rect(322.5, y0, 349.5, y1), v_baja, 12)
                 insert_centered(page, fitz.Rect(349.5, y0, 395.5, y1), v_media, 12)
                 insert_centered(page, fitz.Rect(395.5, y0, 439.5, y1), v_alta, 12)
+                
+                # Missing middle column cell editable
+                insert_text(page, fitz.Rect(439.5, y0, 601, y1), "")
 
                 insert_text(page, fitz.Rect(601, y0, 757, y1), inter.get('obs',''), fs_sml)
                 
@@ -274,10 +291,16 @@ CASO FAMILIAR:
             insert_text(p6, fitz.Rect(x6[0], 393.5, x6[-1], 416.5), "")
             fill_per_row(p6, 416.5, 490.5, tit.get('formativo_laboral', {}))
             insert_text(p6, fitz.Rect(x6[0], 490.5, x6[-1], 509.5), "")
+            
+            # B.3 Dos filas extra (Laboral + Dificultades)
+            fill_per_row(p6, 509.5, 583.5, {})
+            insert_text(p6, fitz.Rect(x6[0], 583.5, x6[-1], 602.5), "")
+            fill_per_row(p6, 602.5, 676.5, {})
+            insert_text(p6, fitz.Rect(x6[0], 676.5, x6[-1], 695.5), "")
 
-            # Resto miembros
-            insert_text(p6, fitz.Rect(56, 510, 750, 530), "-- SECCIÓN DE ANEXO: INTERVENCIÓN OTROS MIEMBROS --", 11)
-            insert_text(p6, fitz.Rect(56, 535, 750, 680), data.get('intervencion_otros_miembros', ''), fs_data)
+            # Resto miembros lo movemos un poco para no pisar las celdas nuevas
+            insert_text(p6, fitz.Rect(56, 700, 750, 715), "-- SECCIÓN DE ANEXO: INTERVENCIÓN OTROS MIEMBROS --", 11)
+            insert_text(p6, fitz.Rect(56, 720, 750, 800), data.get('intervencion_otros_miembros', ''), fs_data)
 
             # P7 Exoneraciones Generales
             p7 = doc[6]
@@ -306,6 +329,9 @@ CASO FAMILIAR:
                 insert_text(p7, fitz.Rect(156, 626, 543, 638), "X" if exo.get('desempleo_derivacion_labora_nums') else "") 
             insert_text(p7, fitz.Rect(156, 643, 543, 654), "")
             insert_text(p7, fitz.Rect(156, 659, 543, 670), "") 
+            
+            # C) OBSERVACIONES Y COMENTARIOS ADICIONALES (En Página 7 hacia abajo o P8)
+            insert_text(p7, fitz.Rect(55, 690, 750, 800), "")
 
             # P8 Firmas
             p8 = doc[7]
@@ -314,6 +340,13 @@ CASO FAMILIAR:
                 base_y = p8_fdo[0].y1 + 10
                 for i, fir in enumerate(exo.get('firmantes', [])):
                     insert_text(p8, fitz.Rect(80, base_y + (25*i), 400, base_y + 20 + (25*i)), fir, fs_data)
+                    
+            # Caja de observaciones adicional P8
+            insert_text(p8, fitz.Rect(55, 100, 750, 300), "")
+                    
+            # FECHA FINAL Editable
+            insert_text(p8, fitz.Rect(325, 60, 550, 90), "")
+            insert_text(p8, fitz.Rect(60, 490, 550, 530), "", 12) # Lugar y fecha extra
 
             pdf_bytes = doc.write()
             doc.close()
