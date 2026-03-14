@@ -34,7 +34,8 @@ if st.button("Generar PLAPIN en PDF", type="primary"):
         st.stop()
     
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-pro')
+    # Utilizamos el modelo estándar soportado por la API
+    model = genai.GenerativeModel('gemini-1.5-pro-latest')
 
     prompt = f"""
 Lee este caso familiar y extrae la información para rellenar el Plan Personalizado de Inclusión.
@@ -88,8 +89,7 @@ CASO FAMILIAR:
             
             data = json.loads(json_str)
         except Exception as e:
-            st.error(f"Error parseando datos: {e}")
-            st.code(response.text)
+            st.error(f"Error procesando los datos con la IA: {e}")
             st.stop()
             
     with st.spinner("Rellenando plantilla PDF Oficial..."):
