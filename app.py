@@ -149,10 +149,12 @@ CASO FAMILIAR:
                 insert_centered(p1, fitz.Rect(v[2], 421.5, v[3], 442.5), data['persona_3']['parentesco'], fs_data)
                 insert_centered(p1, fitz.Rect(v[3], 421.5, v[4], 442.5), data['persona_3']['fecha_nac'], fs_data)
             
-            res3 = p1.search_for("NO")
-            for r in res3:
-                 if abs(r.y0 - p1.search_for("SÍ (debe adjuntarse)")[0].y0) < 20:
-                     p1.insert_text(fitz.Point(r.x1 + 10, r.y0+8), "X", fontname=font, fontsize=12, color=color)
+            res_adj = p1.search_for("SÍ (debe adjuntarse)")
+            if res_adj:
+                res3 = p1.search_for("NO")
+                for r in res3:
+                     if abs(r.y0 - res_adj[0].y0) < 20:
+                         p1.insert_text(fitz.Point(r.x1 + 10, r.y0+8), "X", fontname=font, fontsize=12, color=color)
 
             # P3 y P4 Diagnostics
             def fill_diag_row(page, y0, y1, inter, obs):
@@ -250,4 +252,6 @@ CASO FAMILIAR:
             st.download_button("Descargar PDF", data=pdf_bytes, file_name="PLAPIN_Generado.pdf", mime="application/pdf")
             
         except Exception as e:
+            import traceback
             st.error(f"Error procesando el PDF: {e}")
+            st.code(traceback.format_exc())
