@@ -34,8 +34,8 @@ if st.button("Generar PLAPIN en PDF", type="primary"):
         st.stop()
     
     genai.configure(api_key=api_key)
-    # Utilizamos el modelo estándar soportado por la API
-    model = genai.GenerativeModel('gemini-1.5-pro-latest')
+    # Utilizamos el modelo ultra-rápido estándar que no falla con cuentas gratuitas
+    model = genai.GenerativeModel('gemini-1.5-flash')
 
     prompt = f"""
 Lee este caso familiar y extrae la información para rellenar el Plan Personalizado de Inclusión.
@@ -82,11 +82,15 @@ CASO FAMILIAR:
         try:
             response = model.generate_content(prompt)
             json_str = response.text.strip()
+            # Eliminar delimitadores markdown de la IA si existen
             if json_str.startswith("```json"):
-                json_str = json_str.split("```json")[1].split("```")[0].strip()
-            elif json_str.startswith("```"):
-                json_str = json_str.split("```")[1].split("```")[0].strip()
+                json_str = json_str[7:]
+            if json_str.startswith("```"):
+                json_str = json_str[3:]
+            if json_str.endswith("```"):
+                json_str = json_str[:-3]
             
+            json_str = json_str.strip()
             data = json.loads(json_str)
         except Exception as e:
             st.error(f"Error procesando los datos con la IA: {e}")
