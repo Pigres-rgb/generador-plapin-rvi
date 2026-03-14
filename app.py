@@ -12,8 +12,14 @@ st.markdown("Introduce el caso familiar y generaremos el PDF rellenado cuadrado 
 
 with st.sidebar:
     st.header("1. Configuración")
-    api_key = st.text_input("Gemini API Key", type="password", help="Genera una clave gratuita en Google AI Studio")
-    st.markdown("Esta clave no se guarda, se usa solo durante la sesión.")
+    
+    # Intenta leer la clave desde los secretos de Streamlit (si está configurada)
+    if "GEMINI_API_KEY" in st.secrets:
+        api_key = st.secrets["GEMINI_API_KEY"]
+        st.success("✅ API Key cargada de forma segura desde los ajustes.")
+    else:
+        api_key = st.text_input("Gemini API Key", type="password", help="Genera una clave gratuita en Google AI Studio")
+        st.markdown("Esta clave no se guarda, se usa solo durante la sesión.")
 
 st.header("2. Datos del Nuevo Caso Familiar")
 caso_text = st.text_area("Pega aquí el caso, informe o notas de la familia:", height=300,
