@@ -200,21 +200,21 @@ CASO FAMILIAR:
             for i in range(8):
                 if i == 0:
                     insert_centered(p1, fitz.Rect(v[0], p1_y[i], v[1], p1_y[i+1]), "1", fs_data)
-                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data['titular'].get('nombre',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data.get('titular', {}).get('nombre',''), fs_data)
                     insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), "Titular", fs_data)
-                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data['titular'].get('fecha_nac',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data.get('titular', {}).get('fecha_nac',''), fs_data)
                     insert_centered(p1, fitz.Rect(v[4], p1_y[i], v[5], p1_y[i+1]), "", fs_data)
-                elif i == 1 and data['persona_2']['existe']:
+                elif i == 1 and data.get('persona_2', {}).get('existe'):
                     insert_centered(p1, fitz.Rect(v[0], p1_y[i], v[1], p1_y[i+1]), "2", fs_data)
-                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data['persona_2'].get('nombre',''), fs_data)
-                    insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), data['persona_2'].get('parentesco',''), fs_data)
-                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data['persona_2'].get('fecha_nac',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data.get('persona_2', {}).get('nombre',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), data.get('persona_2', {}).get('parentesco',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data.get('persona_2', {}).get('fecha_nac',''), fs_data)
                     insert_centered(p1, fitz.Rect(v[4], p1_y[i], v[5], p1_y[i+1]), "", fs_data)
-                elif i == 2 and data['persona_3']['existe']:
+                elif i == 2 and data.get('persona_3', {}).get('existe'):
                     insert_centered(p1, fitz.Rect(v[0], p1_y[i], v[1], p1_y[i+1]), "3", fs_data)
-                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data['persona_3'].get('nombre',''), fs_data)
-                    insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), data['persona_3'].get('parentesco',''), fs_data)
-                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data['persona_3'].get('fecha_nac',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[1], p1_y[i], v[2], p1_y[i+1]), data.get('persona_3', {}).get('nombre',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[2], p1_y[i], v[3], p1_y[i+1]), data.get('persona_3', {}).get('parentesco',''), fs_data)
+                    insert_centered(p1, fitz.Rect(v[3], p1_y[i], v[4], p1_y[i+1]), data.get('persona_3', {}).get('fecha_nac',''), fs_data)
                     insert_centered(p1, fitz.Rect(v[4], p1_y[i], v[5], p1_y[i+1]), "", fs_data)
                 else:
                     insert_centered(p1, fitz.Rect(v[0], p1_y[i], v[1], p1_y[i+1]), str(i+1), fs_data)
@@ -266,15 +266,16 @@ CASO FAMILIAR:
                 insert_text(page, fitz.Rect(601, y0, 757, y1), inter.get('obs',''), fs_sml)
                 
             p3 = doc[2]
-            fill_diag_row(p3, 174.5, 227.5, data['diagnostico'].get("1", {}))
-            fill_diag_row(p3, 227.5, 272.5, data['diagnostico'].get("2", {}))
-            fill_diag_row(p3, 272.5, 323.5, data['diagnostico'].get("3", {}))
-            fill_diag_row(p3, 323.5, 371.5, data['diagnostico'].get("4", {}))
-            fill_diag_row(p3, 371.5, 426.5, data['diagnostico'].get("5", {}))
-            fill_diag_row(p3, 426.5, 471.5, data['diagnostico'].get("6", {}))
-            fill_diag_row(p3, 471.5, 519.5, data['diagnostico'].get("7", {}))
+            diag = data.get('diagnostico', {})
+            fill_diag_row(p3, 174.5, 227.5, diag.get("1", {}))
+            fill_diag_row(p3, 227.5, 272.5, diag.get("2", {}))
+            fill_diag_row(p3, 272.5, 323.5, diag.get("3", {}))
+            fill_diag_row(p3, 323.5, 371.5, diag.get("4", {}))
+            fill_diag_row(p3, 371.5, 426.5, diag.get("5", {}))
+            fill_diag_row(p3, 426.5, 471.5, diag.get("6", {}))
+            fill_diag_row(p3, 471.5, 519.5, diag.get("7", {}))
             p4 = doc[3]
-            fill_diag_row(p4, 63.5, 111.5, data['diagnostico'].get("8", {}))
+            fill_diag_row(p4, 63.5, 111.5, diag.get("8", {}))
             
             # Additional rows in page 4 (A.4 continuation)
             try:
@@ -288,9 +289,11 @@ CASO FAMILIAR:
             # P5 Comunes Editable
             p5 = doc[4]
             x5 = [133.5, 297.5, 463.5, 628.5, 670.5, 713.5, 757]
-            com = data['intervencion_comun']
+            com = data.get('intervencion_comun', {})
+            if com is None: com = {}
             
             def fill_com_row(page, y0, y1, inter):
+                if inter is None: inter = {}
                 insert_text(page, fitz.Rect(x5[0], y0, x5[1], y1), inter.get('txt1', ''))
                 insert_text(page, fitz.Rect(x5[1], y0, x5[2], y1), inter.get('txt2', ''))
                 insert_text(page, fitz.Rect(x5[2], y0, x5[3], y1), inter.get('txt3', ''))
@@ -304,18 +307,20 @@ CASO FAMILIAR:
             insert_text(p5, fitz.Rect(x5[0], 352.5, x5[-1], 379.5), "")
             fill_com_row(p5, 379.5, 477.5, com.get('economico', {}))
             insert_text(p5, fitz.Rect(x5[0], 477.5, x5[-1], 506.5), "")
-
+ 
             insert_centered(p5, fitz.Rect(56, 558, 70, 580), "1", fs_data)
-            insert_centered(p5, fitz.Rect(70, 558, 330, 580), data['titular']['nombre'], fs_data)
+            insert_centered(p5, fitz.Rect(70, 558, 330, 580), data.get('titular', {}).get('nombre',''), fs_data)
             insert_centered(p5, fitz.Rect(340, 558, 440, 580), "Titular", fs_data)
-            insert_centered(p5, fitz.Rect(450, 558, 550, 580), data['titular']['fecha_nac'], fs_data)
-
+            insert_centered(p5, fitz.Rect(450, 558, 550, 580), data.get('titular', {}).get('fecha_nac', ''), fs_data)
+ 
             # P6 Personalizada Editable
             p6 = doc[5]
             x6 = [144.5, 298.5, 463.5, 629.0, 671.5, 714.5, 758.0]
-            tit = data['intervencion_titular']
+            tit = data.get('intervencion_titular', {})
+            if tit is None: tit = {}
             
             def fill_per_row(page, y0, y1, inter):
+                if inter is None: inter = {}
                 insert_text(page, fitz.Rect(x6[0], y0, x6[1], y1), inter.get('txt1', ''))
                 insert_text(page, fitz.Rect(x6[1], y0, x6[2], y1), inter.get('txt2', ''))
                 insert_text(page, fitz.Rect(x6[2], y0, x6[3], y1), inter.get('txt3', ''))
