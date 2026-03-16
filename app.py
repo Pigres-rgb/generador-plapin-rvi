@@ -154,15 +154,38 @@ CASO FAMILIAR:
 
             # PAGE 1: Identity Table (8 rows)
             p1 = doc[0]
+            
+            # --- Corrección dinámica del encabezado maestro ---
+            # Borramos el encabezado antiguo/corrupto y creamos el nuevo
+            p1.draw_rect(fitz.Rect(50, 60, 580, 280), color=(1,1,1), fill=(1,1,1))
+            p1.draw_rect(fitz.Rect(60, 60, 560, 125), color=(0,0,0), width=0.5, fill=(0.75, 0.85, 0.95))
+            p1.draw_rect(fitz.Rect(60, 135, 560, 260), color=(0,0,0), width=1, fill=(1,1,1))
+            
+            p1.insert_textbox(fitz.Rect(60, 65, 560, 85), "Doc. 3. RVI. RENTA VALENCIANA DE INCLUSIÓN", fontname="helv", fontsize=15, align=fitz.TEXT_ALIGN_CENTER)
+            p1.insert_textbox(fitz.Rect(60, 85, 560, 105), "Plan Personalizado de Inclusión (PLAPIN)", fontname="helv", fontsize=15, align=fitz.TEXT_ALIGN_CENTER)
+            p1.insert_textbox(fitz.Rect(60, 105, 560, 125), "Plan de Atención Individual (PAI)", fontname="helv", fontsize=15, align=fitz.TEXT_ALIGN_CENTER)
+            
+            fs_h = 10
+            p1.insert_text(fitz.Point(70, 153), "ENTIDAD LOCAL: ", fontname="helv", fontsize=fs_h)
+            p1.insert_text(fitz.Point(340, 153), "FECHA: ", fontname="helv", fontsize=fs_h)
+            p1.insert_text(fitz.Point(70, 178), "PROF. REF. AAPP: ", fontname="helv", fontsize=fs_h)
+            p1.insert_text(fitz.Point(390, 178), "Nº COLEGIADO/A: ", fontname="helv", fontsize=fs_h)
+            p1.insert_text(fitz.Point(70, 203), "PROF. ITINERARIOS: ", fontname="helv", fontsize=fs_h)
+            p1.insert_text(fitz.Point(390, 203), "Nº COLEGIADO/A: ", fontname="helv", fontsize=fs_h)
+            p1.draw_line(fitz.Point(60, 222), fitz.Point(560, 222), color=(0,0,0), width=1)
+            p1.insert_text(fitz.Point(70, 243), "Exp. RVI:  RGIS/_____ / _____ / ________", fontname="helv", fontsize=fs_h)
+            p1.insert_text(fitz.Point(320, 243), "Centro social: ", fontname="helv", fontsize=fs_h)
+            # ------------------------------------------------
+            
             # Entidad Local y otros campos de la cabecera para que sean editables:
-            insert_text(p1, fitz.Rect(180, 140, 340, 160), "")
-            insert_text(p1, fitz.Rect(390, 140, 560, 160), "")
-            insert_text(p1, fitz.Rect(180, 165, 340, 185), "")
-            insert_text(p1, fitz.Rect(440, 165, 560, 185), "")
-            insert_text(p1, fitz.Rect(180, 190, 340, 210), "")
-            insert_text(p1, fitz.Rect(440, 190, 560, 210), "")
-            insert_text(p1, fitz.Rect(130, 230, 300, 250), "")
-            insert_text(p1, fitz.Rect(390, 230, 560, 250), "")
+            insert_text(p1, fitz.Rect(160, 140, 335, 155), "")
+            insert_text(p1, fitz.Rect(385, 140, 555, 155), "")
+            insert_text(p1, fitz.Rect(175, 165, 385, 180), "")
+            insert_text(p1, fitz.Rect(490, 165, 555, 180), "")
+            insert_text(p1, fitz.Rect(185, 190, 385, 205), "")
+            insert_text(p1, fitz.Rect(490, 190, 555, 205), "")
+            insert_text(p1, fitz.Rect(130, 230, 305, 245), "")
+            insert_text(p1, fitz.Rect(390, 230, 555, 245), "")
             
             p1_y = [382.5, 400.5, 421.5, 442.5, 463.5, 484.5, 505.5, 526.5, 549.5]
             v = [57.5, 85.5, 263.5, 426.5, 496.5, 558.5]
