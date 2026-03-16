@@ -354,7 +354,7 @@ CASO FAMILIAR:
             
             p7_ex = p7.search_for("Estudiante mayor de 16 años")
             if p7_ex:
-                insert_text(p7, fitz.Rect(p7_ex[0].x1+3, p7_ex[0].y0-2, 545, p7_ex[0].y1+5), "N.º " + exo.get('menor_estudiando_num', '')) 
+                insert_text(p7, fitz.Rect(p7_ex[0].x1+3, p7_ex[0].y0-2, 545, p7_ex[0].y1+5), "N.º " + str(exo.get('menor_estudiando_num', ''))) 
             
             insert_text(p7, fitz.Rect(380, 413, 545, 425), "")
             insert_text(p7, fitz.Rect(380, 432, 545, 443), "")
@@ -370,6 +370,12 @@ CASO FAMILIAR:
                             insert_text(p7, fitz.Rect(cell), "", 10)
             except:
                 pass
+            
+            p7_des = p7.search_for("Situación de desempleo")
+            if p7_des:
+                # También prevenimos fallo aquí forzando a string
+                insert_text(p7, fitz.Rect(p7_des[0].x1+10, p7_des[0].y0-2, 543, p7_des[0].y1+5), "N.º " + str(exo.get('desempleo_derivacion_labora_nums', ''))) 
+
             
             # C) OBSERVACIONES Y COMENTARIOS ADICIONALES (En Página 7 hacia abajo o P8)
             insert_text(p7, fitz.Rect(55, 690, 750, 800), "")
