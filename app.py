@@ -62,39 +62,47 @@ if st.button("Generar PLAPIN en PDF", type="primary"):
         model = genai.GenerativeModel('gemini-1.5-flash')
 
     prompt = f"""
-Lee este caso familiar y extrae la información para rellenar el Plan Personalizado de Inclusión.
-Devuelve ÚNICAMENTE un objeto JSON válido y sin caracteres extra. No uses markdown ````json ````, solo empieza con {{ y termina con }}.
-Estructura exigida:
+Actúa como un asistente experto en Trabajo Social. Tu tarea es diseñar un Plan de Intervención personalizado para una unidad de convivencia perceptora de la Renta Valenciana de Inclusión (RVI).
+El objetivo último de este plan es promover la autonomía de la familia y su independencia de los Servicios Sociales y ayudas públicas. Las actuaciones y tareas marcadas tendrán carácter de compromiso vinculante para el mantenimiento de la RVI.
+
+REGLAS ESTRICTAS:
+1. Fidelidad de los datos: NO inventes ninguna situación, diagnóstico o dato que no esté explícitamente detallado en la descripción del caso.
+2. Principio de necesidad: NO rellenes ni desarrolles apartados donde no haya una problemática o necesidad de mejora expresamente indicada en el texto. Si un área está bien, omítela o indica "Sin problemática detectada".
+3. Estructura de intervención: Para cada área desglosa: Objetivos (qué conseguir), Acciones (estrategias) y Tareas (pasos concretos y medibles).
+
+Devuelve ÚNICAMENTE un objeto JSON válido. No uses markdown ````json ````, solo empieza con {{ y termina con }}.
+
+Estructura del JSON:
 {{
-  "titular": {{"nombre": "Sonia (Titular)", "fecha_nac": "1978 (48a)"}},
-  "persona_2": {{"existe": true, "nombre": "Hija Mayor", "parentesco": "Hija", "fecha_nac": "2008 (18a)"}},
-  "persona_3": {{"existe": true, "nombre": "Hija Menor", "parentesco": "Hija", "fecha_nac": "2010 (16a)"}},
+  "titular": {{"nombre": "Nombre completo", "fecha_nac": "Año (Edad)"}},
+  "persona_2": {{"existe": true/false, "nombre": "...", "parentesco": "...", "fecha_nac": "..."}},
+  "persona_3": {{"existe": true/false, "nombre": "...", "parentesco": "...", "fecha_nac": "..."}},
   "diagnostico": {{
-    "1": {{"si": false, "prioridad": "NADA", "obs": "Sin problema indicado"}},
-    "2": {{"si": true, "prioridad": "ALTA", "obs": "Motivo vivienda"}},
-    "3": {{"si": true, "prioridad": "ALTA", "obs": "Motivo economico"}},
-    "4": {{"si": false, "prioridad": "NADA", "obs": "Sin problema"}},
-    "5": {{"si": false, "prioridad": "NADA", "obs": "Sin problema"}},
-    "6": {{"si": true, "prioridad": "ALTA", "obs": "Motivo salud"}},
-    "7": {{"si": true, "prioridad": "MEDIA", "obs": "Motivo formativo"}},
-    "8": {{"si": true, "prioridad": "ALTA", "obs": "Motivo laboral"}}
+    "1": {{"si": bool, "prioridad": "ALTA/MEDIA/BAJA/NADA", "obs": "..."}}, (Dinámica familiar)
+    "2": {{"si": bool, "prioridad": "...", "obs": "..."}}, (Vivienda)
+    "3": {{"si": bool, "prioridad": "...", "obs": "..."}}, (Económico)
+    "4": {{"si": bool, "prioridad": "...", "obs": "..."}}, (Desarrollo Personal)
+    "5": {{"si": bool, "prioridad": "...", "obs": "..."}}, (Participación Comunitaria)
+    "6": {{"si": bool, "prioridad": "...", "obs": "..."}}, (Sanitario)
+    "7": {{"si": bool, "prioridad": "...", "obs": "..."}}, (Formativo)
+    "8": {{"si": bool, "prioridad": "...", "obs": "..."}}  (Laboral)
   }},
   "intervencion_comun": {{
-    "dinamica": {{"txt1": "Ninguno", "txt2": "Ninguna", "txt3": "Ninguna", "corto": false, "medio": false}},
-    "vivienda": {{"txt1": "Objetivos...", "txt2": "Acciones...", "txt3": "Tareas...", "corto": true, "medio": false}},
-    "economico": {{"txt1": "Objetivos...", "txt2": "Acciones...", "txt3": "Tareas...", "corto": true, "medio": true}}
+    "dinamica": {{"txt1": "Objetivos", "txt2": "Acciones", "txt3": "Tareas", "corto": bool, "medio": bool, "largo": bool}},
+    "vivienda": {{"txt1": "...", "txt2": "...", "txt3": "...", "corto": bool, "medio": bool, "largo": bool}},
+    "economico": {{"txt1": "...", "txt2": "...", "txt3": "...", "corto": bool, "medio": bool, "largo": bool}}
   }},
   "intervencion_titular": {{
-    "desarrollo_personal": {{"txt1": "Ninguno", "txt2": "Ninguna", "txt3": "Ninguna"}},
-    "desarrollo_comun": {{"txt1": "Ninguno", "txt2": "Ninguna", "txt3": "Ninguna"}},
-    "sanitario": {{"txt1": "Objs", "txt2": "Accs", "txt3": "Tareas", "corto": true}},
-    "formativo_laboral": {{"txt1": "Objs", "txt2": "Accs", "txt3": "Tareas", "medio": true}}
+    "desarrollo_personal": {{"txt1": "Objetivos", "txt2": "Acciones", "txt3": "Tareas", "corto": bool}},
+    "desarrollo_comun": {{"txt1": "...", "txt2": "...", "txt3": "...", "corto": bool}},
+    "sanitario": {{"txt1": "...", "txt2": "...", "txt3": "...", "corto": bool}},
+    "formativo_laboral": {{"txt1": "...", "txt2": "...", "txt3": "...", "medio": bool}}
   }},
-  "intervencion_otros_miembros": "Resume en texto continuo los objetivos y tareas de persona 2 y persona 3 para adjuntarlos al final. Ejem: PERSONA 2 (HIJA): Objetivos: xxx. Acciones: xxx...",
+  "intervencion_otros_miembros": "Resumen detallado para el resto de miembros.",
   "exoneraciones": {{
-    "menor_estudiando_num": "3",
-    "desempleo_derivacion_labora_nums": "1 y 2",
-    "firmantes": ["Sonia (madre) _________________", "Hija (18a) _________________"]
+    "menor_estudiando_num": "nº",
+    "desempleo_derivacion_labora_nums": "nºs",
+    "firmantes": ["Nombre y cargo/parentesco", "..."]
   }}
 }}
 
